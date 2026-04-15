@@ -2473,6 +2473,40 @@
       border-color: rgba(95, 232, 255, 0.7);
     }
 
+    .page-a-agent__send:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* ── badge variants ───────────────────────────────────────── */
+    .page-a-agent__badge--llm {
+      background: rgba(74, 222, 128, 0.12) !important;
+      color: #4ade80 !important;
+      border-color: rgba(74, 222, 128, 0.3) !important;
+    }
+
+    /* ── typing indicator ─────────────────────────────────────── */
+    .page-a-agent__typing {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+      padding: 2px 0;
+    }
+    .page-a-agent__typing i {
+      display: block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(200, 230, 255, 0.55);
+      animation: agentDot 1.3s ease-in-out infinite;
+    }
+    .page-a-agent__typing i:nth-child(2) { animation-delay: 0.18s; }
+    .page-a-agent__typing i:nth-child(3) { animation-delay: 0.36s; }
+    @keyframes agentDot {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+      30% { transform: translateY(-4px); opacity: 1; }
+    }
+
     /* ── festival entries ──────────────────────────────────────── */
     .page-a-culture__festival-list {
       list-style: none;
@@ -2791,7 +2825,7 @@
             </div>
             <aside class="page-a-agent" id="page-a-agent" aria-label="旅行路线助手">
               <div class="page-a-agent__head">
-                <span class="page-a-agent__badge">Agent</span>
+                <span class="page-a-agent__badge page-a-agent__badge--llm" id="page-a-agent-badge">AI</span>
                 <h2 class="page-a-agent__title">路线助手</h2>
               </div>
               <div class="page-a-agent__thread" id="page-a-agent-thread" aria-live="polite"></div>
@@ -8069,6 +8103,7 @@
 
       pageASwitchTab("itinerary");
       pageAPopulateCultureAndSpots(wantIso3);
+      pageAAgentConversation = []; // 切换国家时清空多轮历史
       pageAAgentResetThread();
     }
 
@@ -9120,6 +9155,229 @@
       return "【出发地与距离】\n" + lines.join("\n");
     }
 
+    /* ════════════════════════════════════════════════════════════
+       LLM 接入层
+       ════════════════════════════════════════════════════════════ */
+
+    /**
+     * 【站点部署者填写】二选一：
+     *
+     * 方案 A（推荐·简单）：直接填入 DeepSeek API Key，浏览器直接调用。
+     *   Key 会在源码中可见，建议在 DeepSeek 后台设置月消费上限（几元即可）。
+     *   获取 Key：https://platform.deepseek.com → API Keys
+     *
+     * 方案 B（安全）：填入 Cloudflare Worker 代理 URL（详见 worker.js）。
+     *   此时 PAGE_A_AGENT_DEFAULT_KEY 留空即可。
+     *
+     * 两者都留空时，用户需在 ⚙ 面板自行填写个人 Key。
+     */
+    const PAGE_A_AGENT_DEFAULT_KEY  = "sk-194ac1922f794721838a717e5cfa2069";   // 方案 A：填入 "sk-xxxx..."
+    const PAGE_A_AGENT_PROXY_URL    = "";   // 方案 B：填入 Worker URL
+
+    const PAGE_A_AGENT_LS_CFG = "arc_agent_llm_cfg";
+
+    const PAGE_A_AGENT_PRESETS = {
+      "https://api.deepseek.com/v1":                          { model: "deepseek-chat" },
+      "https://api.openai.com/v1":                            { model: "gpt-4o-mini" },
+      "https://api.moonshot.cn/v1":                           { model: "moonshot-v1-8k" },
+      "https://dashscope.aliyuncs.com/compatible-mode/v1":    { model: "qwen-turbo" },
+    };
+
+    // 对话历史（多轮），切换国家时重置
+    let pageAAgentConversation = [];
+
+    function pageAAgentLoadCfg() {
+      try { return JSON.parse(localStorage.getItem(PAGE_A_AGENT_LS_CFG) || "null"); }
+      catch { return null; }
+    }
+
+    function pageAAgentSaveCfg(cfg) {
+      localStorage.setItem(PAGE_A_AGENT_LS_CFG, JSON.stringify(cfg));
+    }
+
+    function pageAAgentIsLLMActive() {
+      const cfg = pageAAgentLoadCfg();
+      return !!(PAGE_A_AGENT_PROXY_URL || PAGE_A_AGENT_DEFAULT_KEY || (cfg && cfg.apiKey));
+    }
+
+    function pageAAgentUpdateBadge() {
+      const badge = document.getElementById("page-a-agent-badge");
+      if (!badge) return;
+      if (pageAAgentIsLLMActive()) {
+        badge.textContent = "AI";
+        badge.classList.add("page-a-agent__badge--llm");
+      } else {
+        badge.textContent = "Agent";
+        badge.classList.remove("page-a-agent__badge--llm");
+      }
+    }
+
+    // 构建包含当前国家上下文的 system prompt
+    function pageAAgentBuildSystemPrompt() {
+      const iso = pageACurrentIso3;
+      const countryName = pageAGetCountryTitleForAgent();
+      const spots = PAGE_A_COUNTRY_SPOTS[iso] || [];
+      const locs  = PAGE_A_SPOT_LOCATIONS[iso] || [];
+      const culture = PAGE_A_COUNTRY_CULTURE && PAGE_A_COUNTRY_CULTURE[iso];
+      const hub = pageAAgentHomeHubPhrase();
+
+      let prompt =
+        `你是 Arc-Exploration 旅行规划平台的 AI 助手，专门帮助用户制定前往世界各地的旅行计划。\n` +
+        `当前用户正在查看的目的地：${countryName}（ISO3: ${iso}）。\n` +
+        `用户出发地参考枢纽：${hub}。\n\n`;
+
+      if (spots.length) {
+        prompt += `【${countryName}主要景点】\n`;
+        spots.forEach((s, i) => {
+          const loc = locs[i] ? `（位置：${locs[i]}）` : "";
+          prompt += `- ${s.name}${loc}：${s.desc || ""}\n`;
+        });
+        prompt += "\n";
+      }
+
+      if (culture) {
+        if (culture.climate) prompt += `【气候特色】${culture.climate}\n\n`;
+        if (culture.food?.length) prompt += `【当地美食】${culture.food.join("、")}\n\n`;
+        if (culture.festivals?.length) prompt += `【主要节日】${culture.festivals.join("、")}\n\n`;
+      }
+
+      prompt +=
+        `【回复原则】\n` +
+        `1. 用简体中文回复，语言自然友好。\n` +
+        `2. 提供实用的旅行建议，涵盖交通、签证、最佳季节、预算参考等。\n` +
+        `3. 若提及具体航班号或列车时刻，须明确注明"仅为示例，请以官方渠道为准"。\n` +
+        `4. 回复长度适中，避免过于冗长。`;
+
+      return prompt;
+    }
+
+    // 在消息线程中追加一个流式气泡，返回控制对象
+    function pageAAgentBeginStreamBubble() {
+      const thread = document.getElementById("page-a-agent-thread");
+      if (!thread) return { update() {}, error() {} };
+
+      const div = document.createElement("div");
+      div.className = "page-a-agent__msg page-a-agent__msg--assistant";
+      div.innerHTML = `<span class="page-a-agent__typing"><i></i><i></i><i></i></span>`;
+      thread.appendChild(div);
+      thread.scrollTop = thread.scrollHeight;
+
+      let started = false;
+      return {
+        update(text) {
+          if (!started) { started = true; div.textContent = ""; }
+          div.textContent = text;
+          thread.scrollTop = thread.scrollHeight;
+        },
+        error(msg) {
+          div.innerHTML = `<span style="color:rgba(252,165,165,0.9)">${msg}</span>`;
+          thread.scrollTop = thread.scrollHeight;
+        },
+      };
+    }
+
+    // 调用 LLM（流式），返回完整回复文本或 null
+    async function pageAAgentCallLLM(userText) {
+      // 解析使用哪种模式（优先级：个人Key > 代理URL > 内置Key）
+      const cfg = pageAAgentLoadCfg();
+      let fetchURL, fetchHeaders, model;
+
+      if (cfg && cfg.apiKey) {
+        // 用户个人 Key（最高优先级）
+        const endpoint = (cfg.endpoint || "https://api.deepseek.com/v1").replace(/\/+$/, "");
+        fetchURL     = `${endpoint}/chat/completions`;
+        fetchHeaders = { "Content-Type": "application/json", "Authorization": `Bearer ${cfg.apiKey}` };
+        model        = cfg.model || "deepseek-chat";
+      } else if (PAGE_A_AGENT_PROXY_URL) {
+        // 方案 B：Cloudflare Worker 代理，无需 Key
+        fetchURL     = PAGE_A_AGENT_PROXY_URL.replace(/\/+$/, "");
+        fetchHeaders = { "Content-Type": "application/json" };
+        model        = "deepseek-chat";
+      } else if (PAGE_A_AGENT_DEFAULT_KEY) {
+        // 方案 A：站点内置 Key，直接调用 DeepSeek
+        fetchURL     = "https://api.deepseek.com/v1/chat/completions";
+        fetchHeaders = { "Content-Type": "application/json", "Authorization": `Bearer ${PAGE_A_AGENT_DEFAULT_KEY}` };
+        model        = "deepseek-chat";
+      } else {
+        return null; // 未配置任何 LLM
+      }
+
+      // 构建消息列表，保留最近 12 条历史
+      const history  = pageAAgentConversation.slice(-12);
+      const messages = [
+        { role: "system", content: pageAAgentBuildSystemPrompt() },
+        ...history,
+        { role: "user", content: userText },
+      ];
+
+      // 把用户消息先写入历史
+      pageAAgentConversation.push({ role: "user", content: userText });
+
+      const streamer = pageAAgentBeginStreamBubble();
+
+      try {
+        const resp = await fetch(fetchURL, {
+          method: "POST",
+          headers: fetchHeaders,
+          body: JSON.stringify({
+            model,
+            messages,
+            stream: true,
+            temperature: 0.7,
+            max_tokens: 2048,
+          }),
+        });
+
+        if (!resp.ok) {
+          const errText = await resp.text().catch(() => resp.statusText);
+          throw new Error(`HTTP ${resp.status}：${errText.slice(0, 200)}`);
+        }
+
+        const reader  = resp.body.getReader();
+        const decoder = new TextDecoder();
+        let fullText  = "";
+        let buf       = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+          // 按行处理 SSE
+          const lines = buf.split("\n");
+          buf = lines.pop(); // 最后一行可能不完整，留到下次
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed.startsWith("data:")) continue;
+            const data = trimmed.slice(5).trim();
+            if (data === "[DONE]") continue;
+            try {
+              const parsed = JSON.parse(data);
+              const delta  = parsed.choices?.[0]?.delta?.content ?? "";
+              if (delta) { fullText += delta; streamer.update(fullText); }
+            } catch { /* 忽略格式异常行 */ }
+          }
+        }
+
+        if (fullText) {
+          pageAAgentConversation.push({ role: "assistant", content: fullText });
+        } else {
+          streamer.error("⚠ LLM 返回了空内容，请检查模型名称是否正确。");
+        }
+        return fullText || null;
+
+      } catch (err) {
+        // 回滚刚写入的用户消息
+        if (pageAAgentConversation.at(-1)?.role === "user") {
+          pageAAgentConversation.pop();
+        }
+        streamer.error(
+          `⚠ 请求失败：${err.message}\n\n` +
+          `请检查：① API Key 是否正确 ② 接入点 URL 是否匹配所选服务商 ③ 网络是否可访问该服务。`
+        );
+        return null;
+      }
+    }
+
     const PAGE_A_AGENT_EXAMPLE_DISCLAIMER =
       "【重要】下文航班号、火车时刻均为「结构示例」，用于说明典型动线，不是实时时刻表；实际班次、机型与票价请在航司、铁路官网或正规 OTA 查询后购票。";
 
@@ -9317,9 +9575,12 @@
       thread.innerHTML = "";
       pageAAgentAppendMessage(
         "assistant",
-        "你好，我是路线助手。你可以直接提问（例如「请问怎么去伊瓜苏瀑布」），或在左侧「景点」勾选多个地点后点「生成规划路线」。\n\n" +
-          "我会直接给出较合适的出行方式组合（示例航班／火车时刻仅作动线说明，非实时表），并结合「计划出发日期」与（若已设置）出发地 GPS／城市做距离参考。\n\n" +
-          "若已在左侧点过「获取当前位置」，我会自动使用；也可点下面「用 GPS 优化」与左侧同步。"
+        "你好！可以直接向我提问任何关于目的地的旅行问题，例如：\n\n" +
+        "• 「这个国家最佳旅行季节是什么时候？」\n" +
+        "• 「签证申请需要哪些材料？」\n" +
+        "• 「推荐一个7天行程」\n" +
+        "• 「怎么从机场去市区？」\n\n" +
+        "也可以在「景点」页勾选多个地点后点「生成规划路线」，我会为你串联完整路线。"
       );
     }
 
@@ -9446,16 +9707,21 @@
       return parts.filter(Boolean).join("\n\n");
     }
 
-    function pageAAgentReplyToQuestion(userText) {
+    async function pageAAgentReplyToQuestion(userText) {
+      const q = userText.trim();
+      if (!q) { pageAAgentAppendMessage("assistant", "请输入你想了解的问题。"); return; }
+
+      // 优先使用 LLM（代理模式或个人 Key 模式）
+      if (pageAAgentIsLLMActive()) {
+        await pageAAgentCallLLM(q);
+        return;
+      }
+
+      // 未配置 LLM 时，回退到本地规则引擎
       const iso = pageACurrentIso3;
       const countryName = pageAGetCountryTitleForAgent();
       const spots = PAGE_A_COUNTRY_SPOTS[iso] || [];
       const locations = PAGE_A_SPOT_LOCATIONS[iso] || [];
-      const q = userText.trim();
-      if (!q) {
-        pageAAgentAppendMessage("assistant", "请输入你想了解的问题。");
-        return;
-      }
       const matched = pageAMatchSpotFromQuestion(q, spots);
       if (matched && matched.spot) {
         const loc = locations[matched.index] || "";
@@ -9468,13 +9734,14 @@
       if (/怎么|如何|怎样去|路线|交通|去哪|到.*哪/.test(q)) {
         pageAAgentAppendMessage(
           "assistant",
-          `我暂时没能从问题里对上具体景点名。请在「景点」页查看列表中的准确名称，或直接在问题里写出与列表一致的景点名（例如「伊瓜苏瀑布」）。\n\n当前目的地：${countryName}。你也可以勾选多个景点后点「生成规划路线」。`
+          `我暂时没能从问题里对上具体景点名。请在「景点」页查看列表中的准确名称。\n\n` +
+          `当前目的地：${countryName}。你也可以勾选多个景点后点「生成规划路线」。`
         );
         return;
       }
       pageAAgentAppendMessage(
         "assistant",
-        `（${countryName}）我已收到：「${q}」。你可以问「怎么去某某景点」，或使用左侧景点复选框与「生成规划路线」获取串联行程。`
+        `（${countryName}）我已收到：「${q}」。可问「怎么去某某景点」，或勾选景点后点「生成规划路线」。`
       );
     }
 
@@ -9486,7 +9753,7 @@
       btn.disabled = n === 0;
     }
 
-    function pageAAgentPlanFromSelectedSpots() {
+    async function pageAAgentPlanFromSelectedSpots() {
       const spotsEl = document.getElementById("page-a-spots-content");
       if (!spotsEl) return;
       const boxes = spotsEl.querySelectorAll("input[data-page-a-spot]:checked");
@@ -9506,16 +9773,24 @@
       });
       if (!names.length) return;
       const countryName = pageAGetCountryTitleForAgent();
-      const summary = pageAAgentComposeRoutePlan(selectedSpots, locs, countryName);
-      pageAAgentAppendMessage("user", `请为已选景点规划路线：${names.join("、")}`);
-      pageAAgentAppendMessage("assistant", summary);
+      const userMsg = `请为以下景点规划串联路线：${names.join("、")}。景点位置：${locs.filter(Boolean).join("、") || "见景点介绍"}。目的地：${countryName}。`;
+      pageAAgentAppendMessage("user", userMsg);
+
+      if (pageAAgentIsLLMActive()) {
+        await pageAAgentCallLLM(userMsg);
+      } else {
+        const summary = pageAAgentComposeRoutePlan(selectedSpots, locs, countryName);
+        pageAAgentAppendMessage("assistant", summary);
+      }
     }
 
     (function initPageAAgent() {
-      const send = document.getElementById("page-a-agent-send");
-      const input = document.getElementById("page-a-agent-input");
-      const agentGeo = document.getElementById("page-a-agent-geo-btn");
-      const spotsPanel = document.getElementById("page-a-panel-spots");
+      const send      = document.getElementById("page-a-agent-send");
+      const input     = document.getElementById("page-a-agent-input");
+      const agentGeo  = document.getElementById("page-a-agent-geo-btn");
+      const spotsPanel= document.getElementById("page-a-panel-spots");
+
+      // ── GPS 定位 ──────────────────────────────────────────────
       if (agentGeo) {
         agentGeo.addEventListener("click", () => {
           if (!navigator.geolocation) {
@@ -9551,30 +9826,41 @@
           );
         });
       }
+
+      // ── 发送消息 ──────────────────────────────────────────────
       if (send && input) {
-        send.addEventListener("click", () => {
+        const doSend = async () => {
           const t = input.value.trim();
-          if (!t) return;
+          if (!t || send.disabled) return;
           pageAAgentAppendMessage("user", t);
           input.value = "";
-          pageAAgentReplyToQuestion(t);
-        });
+          send.disabled = true;
+          try {
+            await pageAAgentReplyToQuestion(t);
+          } finally {
+            send.disabled = false;
+            input.focus();
+          }
+        };
+
+        send.addEventListener("click", doSend);
         input.addEventListener("keydown", (e) => {
           if (e.key === "Enter" && !e.shiftKey) {
             e.preventDefault();
-            send.click();
+            doSend();
           }
         });
       }
+
+      // ── 景点勾选规划 ──────────────────────────────────────────
       if (spotsPanel) {
         spotsPanel.addEventListener("change", (e) => {
-          const t = e.target;
-          if (t && t.matches && t.matches("input[data-page-a-spot]")) {
+          if (e.target?.matches?.("input[data-page-a-spot]")) {
             pageAUpdateSpotPlanButton();
           }
         });
         spotsPanel.addEventListener("click", (e) => {
-          const btn = e.target && e.target.closest && e.target.closest("#page-a-spots-plan-btn");
+          const btn = e.target?.closest?.("#page-a-spots-plan-btn");
           if (btn) {
             e.preventDefault();
             pageAAgentPlanFromSelectedSpots();
