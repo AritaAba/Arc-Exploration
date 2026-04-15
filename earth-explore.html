@@ -1918,15 +1918,6 @@
         width: 100% !important;
         border-right: none;
       }
-      .page-a-agent {
-        flex: 1 1 auto;
-        max-width: none;
-        min-width: 0;
-        width: 100%;
-        border-left: none;
-        border-top: 1px solid rgba(255, 255, 255, 0.12);
-        max-height: min(52vh, 420px);
-      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -2253,226 +2244,6 @@
       margin-bottom: 0.2rem;
     }
 
-    .page-a-spots__row {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-
-    .page-a-spots__main {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .page-a-spots__pick {
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      padding-top: 0.12rem;
-      cursor: pointer;
-    }
-
-    .page-a-spots__pick input {
-      width: 1rem;
-      height: 1rem;
-      accent-color: rgba(95, 232, 255, 0.95);
-      cursor: pointer;
-    }
-
-    .page-a-spots__actions {
-      margin-top: 0.75rem;
-      padding-top: 0.65rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .page-a-spots__plan-btn {
-      width: 100%;
-      font-family: inherit;
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      padding: 0.55rem 0.75rem;
-      border-radius: 8px;
-      border: 1px solid rgba(95, 232, 255, 0.45);
-      background: rgba(95, 232, 255, 0.1);
-      color: rgba(200, 250, 255, 0.95);
-      cursor: pointer;
-      transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        opacity 0.2s ease;
-    }
-
-    .page-a-spots__plan-btn:hover:not(:disabled) {
-      background: rgba(95, 232, 255, 0.18);
-      border-color: rgba(95, 232, 255, 0.65);
-    }
-
-    .page-a-spots__plan-btn:disabled {
-      opacity: 0.38;
-      cursor: not-allowed;
-    }
-
-    /* ── travel agent (right column) ───────────────────────────── */
-    .page-a-agent {
-      flex: 0 0 min(30vw, 300px);
-      min-width: 240px;
-      max-width: 340px;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      border-left: 1px solid rgba(255, 255, 255, 0.12);
-      background: linear-gradient(
-        180deg,
-        rgba(6, 8, 14, 0.98) 0%,
-        rgba(4, 6, 12, 0.99) 100%
-      );
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-    }
-
-    .page-a-agent__head {
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.65rem 0.75rem 0.5rem;
-      border-bottom: 1px solid rgba(95, 232, 255, 0.12);
-    }
-
-    .page-a-agent__badge {
-      font-size: 0.52rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 0.2rem 0.38rem;
-      border-radius: 4px;
-      background: rgba(95, 232, 255, 0.15);
-      color: rgba(160, 245, 255, 0.95);
-      border: 1px solid rgba(95, 232, 255, 0.35);
-    }
-
-    .page-a-agent__title {
-      margin: 0;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.92);
-      letter-spacing: 0.02em;
-    }
-
-    .page-a-agent__thread {
-      flex: 1;
-      min-height: 120px;
-      overflow-y: auto;
-      padding: 0.65rem 0.75rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.55rem;
-    }
-
-    .page-a-agent__msg {
-      font-size: 0.68rem;
-      line-height: 1.55;
-      padding: 0.5rem 0.58rem;
-      border-radius: 8px;
-      max-width: 100%;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .page-a-agent__msg--user {
-      align-self: flex-end;
-      background: rgba(95, 232, 255, 0.12);
-      border: 1px solid rgba(95, 232, 255, 0.28);
-      color: rgba(230, 252, 255, 0.95);
-    }
-
-    .page-a-agent__msg--assistant {
-      align-self: flex-start;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.78);
-    }
-
-    .page-a-agent__composer {
-      flex-shrink: 0;
-      padding: 0.55rem 0.65rem 0.7rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      flex-direction: column;
-      gap: 0.45rem;
-    }
-
-    .page-a-agent__loc {
-      width: 100%;
-      font-family: inherit;
-      font-size: 0.58rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      padding: 0.38rem 0.5rem;
-      border-radius: 6px;
-      border: 1px dashed rgba(95, 232, 255, 0.35);
-      background: rgba(95, 232, 255, 0.06);
-      color: rgba(200, 240, 255, 0.88);
-      cursor: pointer;
-      transition: background 0.2s ease, border-color 0.2s ease;
-    }
-
-    .page-a-agent__loc:hover:not(:disabled) {
-      background: rgba(95, 232, 255, 0.11);
-      border-color: rgba(95, 232, 255, 0.5);
-    }
-
-    .page-a-agent__loc:disabled {
-      opacity: 0.45;
-      cursor: wait;
-    }
-
-    .page-a-agent__input {
-      width: 100%;
-      min-height: 3.2rem;
-      resize: vertical;
-      max-height: 8rem;
-      padding: 0.45rem 0.55rem;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(0, 0, 0, 0.45);
-      color: rgba(255, 255, 255, 0.9);
-      font-family: inherit;
-      font-size: 0.68rem;
-      line-height: 1.45;
-      outline: none;
-    }
-
-    .page-a-agent__input:focus {
-      border-color: rgba(95, 232, 255, 0.45);
-      box-shadow: 0 0 0 1px rgba(95, 232, 255, 0.15);
-    }
-
-    .page-a-agent__input::placeholder {
-      color: rgba(255, 255, 255, 0.32);
-    }
-
-    .page-a-agent__send {
-      align-self: flex-end;
-      font-family: inherit;
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      padding: 0.42rem 0.95rem;
-      border-radius: 999px;
-      border: 1px solid rgba(95, 232, 255, 0.5);
-      background: rgba(95, 232, 255, 0.14);
-      color: rgba(210, 250, 255, 0.98);
-      cursor: pointer;
-      transition: background 0.2s ease, border-color 0.2s ease;
-    }
-
-    .page-a-agent__send:hover {
-      background: rgba(95, 232, 255, 0.22);
-      border-color: rgba(95, 232, 255, 0.7);
-    }
-
     /* ── festival entries ──────────────────────────────────────── */
     .page-a-culture__festival-list {
       list-style: none;
@@ -2789,29 +2560,6 @@
                 </div><!-- /.page-a-stash -->
               </div>
             </div>
-            <aside class="page-a-agent" id="page-a-agent" aria-label="旅行路线助手">
-              <div class="page-a-agent__head">
-                <span class="page-a-agent__badge">Agent</span>
-                <h2 class="page-a-agent__title">路线助手</h2>
-              </div>
-              <div class="page-a-agent__thread" id="page-a-agent-thread" aria-live="polite"></div>
-              <div class="page-a-agent__composer">
-                <textarea
-                  id="page-a-agent-input"
-                  class="page-a-agent__input"
-                  rows="2"
-                  maxlength="2000"
-                  placeholder="请问怎么去伊瓜苏瀑布"
-                  aria-label="向路线助手提问"
-                ></textarea>
-                <button type="button" class="page-a-agent__loc" id="page-a-agent-geo-btn">
-                  用 GPS 优化建议（与左侧出发地同步）
-                </button>
-                <button type="button" class="page-a-agent__send" id="page-a-agent-send">
-                  发送
-                </button>
-              </div>
-            </aside>
           </div>
         </div>
       </div>
@@ -3095,22 +2843,52 @@
     let visitedCountryMeshes = [];
 
     function pageAGetMemoIso3Set() {
-      const memos = pageALoadMemos();
       const s = new Set();
-      for (const m of memos) {
-        if (m.iso3) s.add(String(m.iso3).toUpperCase());
+      // Each country's memos are stored under PAGE_A_MEMO_LS_PREFIX + iso3.
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (!k || !k.startsWith(PAGE_A_MEMO_LS_PREFIX)) continue;
+        const iso = k.slice(PAGE_A_MEMO_LS_PREFIX.length);
+        if (!iso || iso === "_none_") continue;
+        try {
+          const raw = localStorage.getItem(k);
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr) && arr.length > 0) s.add(iso.toUpperCase());
+        } catch (_) {}
       }
       return s;
     }
 
     async function pageAGetMediaIso3Set() {
       try {
-        const all = await pageALoadAllMedia();
-        const s = new Set();
-        for (const r of all) {
-          if (r.iso3) s.add(String(r.iso3).toUpperCase());
-        }
-        return s;
+        const db = await pageAOpenIdb();
+        return new Promise((resolve) => {
+          const tx = db.transaction(PAGE_A_IDB_STORE, "readonly");
+          const store = tx.objectStore(PAGE_A_IDB_STORE);
+          const s = new Set();
+          // Enumerate all distinct iso3 keys via the index cursor.
+          if (store.indexNames.contains("iso3")) {
+            const req = store.index("iso3").openKeyCursor();
+            req.onsuccess = (e) => {
+              const cursor = e.target.result;
+              if (!cursor) { resolve(s); return; }
+              const iso = String(cursor.key || "").toUpperCase();
+              if (iso && iso !== "") s.add(iso);
+              cursor.continue();
+            };
+            req.onerror = () => resolve(s);
+          } else {
+            // Fallback: load all records.
+            const req = store.getAll();
+            req.onsuccess = () => {
+              for (const r of (req.result || [])) {
+                if (r.iso3) s.add(String(r.iso3).toUpperCase());
+              }
+              resolve(s);
+            };
+            req.onerror = () => resolve(s);
+          }
+        });
       } catch (_) {
         return new Set();
       }
@@ -3541,8 +3319,8 @@
       圣:"聖",辅:"輔",温:"溫",卢:"盧",诺:"諾",历:"歷",灵:"靈",买:"買",
       凯:"凱",毕:"畢",窝:"窩",联:"聯",湾:"灣",龙:"龍",库:"庫",乌:"烏",
       韩:"韓",庄:"莊",际:"際",时:"時",门:"門",车:"車",还:"還",来:"來",
-      丰:"豐",专:"專",综:"綜",统:"統",绍:"紹",积:"積",积:"積",边:"邊",
-      邓:"鄧",渔:"漁",岭:"嶺",间:"間",严:"嚴",斯:"斯",
+      丰:"豐",专:"專",综:"綜",统:"統",绍:"紹",积:"積",边:"邊",
+      邓:"鄧",渔:"漁",岭:"嶺",间:"間",严:"嚴",
     };
 
     function _scToTc(str) {
@@ -6163,7 +5941,6 @@
       ["MEX", "墨西哥城", 19.436, -99.072],
       ["GRU", "圣保罗瓜鲁柳斯", -23.432, -46.469],
       ["GIG", "里约热内卢", -22.81, -43.251],
-      ["IGU", "福斯·杜伊瓜苏（伊瓜苏瀑布）", -25.6, -54.485],
       ["EZE", "布宜诺斯艾利斯", -34.822, -58.536],
       ["SCL", "圣地亚哥（智利）", -33.393, -70.786],
       ["LIM", "利马", -12.022, -77.115],
@@ -7314,22 +7091,6 @@
       void pageARouteFetchOsrmRoadRef(origin, dest, gen);
     }
 
-    /** 写入出发地坐标并与左侧「出发地」面板同步（GPS / 城市共用） */
-    function pageARouteSetOriginFromGeo(lat, lon, label, kind) {
-      const inp = document.getElementById("page-a-route-origin-input");
-      pageARouteOrigin = {
-        lat,
-        lon,
-        label: label || "当前位置",
-        kind: kind === "city" ? "city" : "geo",
-      };
-      pageARouteSaveOrigin(pageARouteOrigin);
-      pageARouteOriginMode = kind === "city" ? "city" : "geo";
-      pageARouteSyncOriginModeUI();
-      if (inp) inp.value = kind === "city" ? String(label || "") : "";
-      pageARouteRefresh();
-    }
-
     let pageARouteListenersBound = false;
     function pageARouteEnsureListeners() {
       if (pageARouteListenersBound) return;
@@ -7375,7 +7136,17 @@
             return;
           }
           const label = hit.name || q;
-          pageARouteSetOriginFromGeo(hit.latitude, hit.longitude, label, "city");
+          pageARouteOrigin = {
+            lat: hit.latitude,
+            lon: hit.longitude,
+            label,
+            kind: "city",
+          };
+          pageARouteSaveOrigin(pageARouteOrigin);
+          pageARouteOriginMode = "city";
+          pageARouteSyncOriginModeUI();
+          if (inp) inp.value = label;
+          pageARouteRefresh();
         });
       }
 
@@ -7390,12 +7161,17 @@
           navigator.geolocation.getCurrentPosition(
             (pos) => {
               locBtn.disabled = false;
-              pageARouteSetOriginFromGeo(
-                pos.coords.latitude,
-                pos.coords.longitude,
-                "当前位置",
-                "geo"
-              );
+              pageARouteOrigin = {
+                lat: pos.coords.latitude,
+                lon: pos.coords.longitude,
+                label: "当前位置",
+                kind: "geo",
+              };
+              pageARouteSaveOrigin(pageARouteOrigin);
+              pageARouteOriginMode = "geo";
+              pageARouteSyncOriginModeUI();
+              if (inp) inp.value = "";
+              pageARouteRefresh();
             },
             () => {
               locBtn.disabled = false;
@@ -7427,20 +7203,33 @@
 
     const PAGE_A_IDB_NAME = "earthExplorePageA";
     const PAGE_A_IDB_STORE = "media";
-    const PAGE_A_MEMO_LS = "earthExplorePageAMemosV1";
+    // Per-country memo keys: earthExplorePageAMemosV2_<ISO3>
+    const PAGE_A_MEMO_LS_PREFIX = "earthExplorePageAMemosV2_";
     const PAGE_A_MAX_UPLOAD = 120 * 1024 * 1024;
+
+    // Returns the localStorage key for the current country's memos.
+    function pageAMemoKey(iso3) {
+      return PAGE_A_MEMO_LS_PREFIX + (iso3 || "_none_");
+    }
 
     let pageAIdbPromise = null;
     function pageAOpenIdb() {
       if (pageAIdbPromise) return pageAIdbPromise;
       pageAIdbPromise = new Promise((resolve, reject) => {
-        const req = indexedDB.open(PAGE_A_IDB_NAME, 1);
+        // Version 2: adds iso3 index to the media store.
+        const req = indexedDB.open(PAGE_A_IDB_NAME, 2);
         req.onerror = () => reject(req.error);
         req.onsuccess = () => resolve(req.result);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
+          let store;
           if (!db.objectStoreNames.contains(PAGE_A_IDB_STORE)) {
-            db.createObjectStore(PAGE_A_IDB_STORE, { keyPath: "id" });
+            store = db.createObjectStore(PAGE_A_IDB_STORE, { keyPath: "id" });
+          } else {
+            store = e.target.transaction.objectStore(PAGE_A_IDB_STORE);
+          }
+          if (!store.indexNames.contains("iso3")) {
+            store.createIndex("iso3", "iso3", { unique: false });
           }
         };
       });
@@ -7461,6 +7250,28 @@
         const q = tx.objectStore(PAGE_A_IDB_STORE).getAll();
         q.onsuccess = () => resolve(q.result || []);
         q.onerror = () => reject(q.error);
+      });
+    }
+
+    // Query media strictly for one country using the iso3 index.
+    async function pageALoadMediaForCountry(iso3) {
+      const db = await pageAOpenIdb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(PAGE_A_IDB_STORE, "readonly");
+        const store = tx.objectStore(PAGE_A_IDB_STORE);
+        // The iso3 index was added in DB version 2.
+        if (store.indexNames.contains("iso3")) {
+          const idx = store.index("iso3");
+          const req = idx.getAll(iso3 || "");
+          req.onsuccess = () => resolve(req.result || []);
+          req.onerror = () => reject(req.error);
+        } else {
+          // Fallback: load all + filter (should not happen on v2+).
+          const req = store.getAll();
+          req.onsuccess = () =>
+            resolve((req.result || []).filter(r => (r.iso3 || "") === (iso3 || "")));
+          req.onerror = () => reject(req.error);
+        }
       });
     }
 
@@ -7563,8 +7374,7 @@
       strip.innerHTML = "";
       let rows = [];
       try {
-        const iso = pageACurrentIso3 || "";
-        rows = (await pageALoadAllMedia()).filter(r => (r.iso3 || "") === iso);
+        rows = await pageALoadMediaForCountry(pageACurrentIso3 || "");
       } catch (_) {
         return;
       }
@@ -7614,9 +7424,10 @@
     let pageASelectedMemoId = null;
     let pageAMemoSaveT = null;
 
-    function pageALoadMemos() {
+    // Load memos for the currently open country from its own localStorage key.
+    function pageALoadCountryMemos() {
       try {
-        const raw = localStorage.getItem(PAGE_A_MEMO_LS);
+        const raw = localStorage.getItem(pageAMemoKey(pageACurrentIso3));
         if (!raw) return [];
         const p = JSON.parse(raw);
         return Array.isArray(p) ? p : [];
@@ -7625,21 +7436,15 @@
       }
     }
 
-    // Returns only the memos belonging to the currently open country.
-    function pageALoadCountryMemos() {
-      const iso = pageACurrentIso3 || "";
-      return pageALoadMemos().filter(m => (m.iso3 || "") === iso);
-    }
+    // Keep pageALoadMemos as an alias so any legacy call still works.
+    function pageALoadMemos() { return pageALoadCountryMemos(); }
 
-    // Saves the current country's memo list while preserving every other
-    // country's memos untouched in localStorage.
+    // Save ONLY the current country's memos under its own key.
     function pageASaveMemos(countryMemos) {
       try {
-        const iso = pageACurrentIso3 || "";
-        const others = pageALoadMemos().filter(m => (m.iso3 || "") !== iso);
         localStorage.setItem(
-          PAGE_A_MEMO_LS,
-          JSON.stringify([...countryMemos, ...others])
+          pageAMemoKey(pageACurrentIso3),
+          JSON.stringify(countryMemos)
         );
         refreshVisitedGlobe();
       } catch (_) {}
@@ -8064,12 +7869,10 @@
       statusEl.hidden = true;
       layoutEl.hidden = false;
       mapMod.hidden = false;
-      void refreshPageAFilmStrip();
       pageAMemoRenderList();
 
       pageASwitchTab("itinerary");
       pageAPopulateCultureAndSpots(wantIso3);
-      pageAAgentResetThread();
     }
 
     const pageAOverlayEl = document.getElementById("page-a-overlay");
@@ -9052,536 +8855,20 @@
             .map(
               (s, i) =>
                 `<li class="page-a-spots__item">` +
-                `<div class="page-a-spots__row">` +
-                `<div class="page-a-spots__main">` +
                 `<div class="page-a-spots__name">${escHtml(s.name)}</div>` +
                 (locations[i] ? `<span class="page-a-spots__location">📍 ${escHtml(locations[i])}</span>` : "") +
                 `<p class="page-a-spots__desc">${escHtml(s.desc)}</p>` +
-                `</div>` +
-                `<label class="page-a-spots__pick">` +
-                `<input type="checkbox" data-page-a-spot="${i}" aria-label="选中：${escHtml(s.name)}" />` +
-                `</label>` +
-                `</div>` +
                 `</li>`
             )
             .join("");
           spotsEl.innerHTML =
             `<div class="page-a-spots__section-title">知名景点</div>` +
-            `<ul class="page-a-spots__list">${spotsHtml}</ul>` +
-            `<div class="page-a-spots__actions">` +
-            `<button type="button" class="page-a-spots__plan-btn" id="page-a-spots-plan-btn" disabled>生成规划路线</button>` +
-            `</div>`;
+            `<ul class="page-a-spots__list">${spotsHtml}</ul>`;
         } else {
           spotsEl.innerHTML = `<p class="page-a-spots__empty">暂无该国景点数据。</p>`;
         }
       }
     }
-
-    function pageAGetCountryTitleForAgent() {
-      const t = document.getElementById("page-a-title");
-      return (t && t.textContent && t.textContent.trim()) || "目的地";
-    }
-
-    function pageAGetTripScheduleHint() {
-      const dEl = document.getElementById("page-a-trip-date");
-      const tEl = document.getElementById("page-a-trip-time");
-      const dv = dEl && dEl.value;
-      const tv = tEl && tEl.value;
-      if (!dv) return "";
-      return `你在「行程」里填写的计划出发日为 ${dv}${tv ? " " + tv : ""}（作规划参考；实际时刻以出票与航司为准）。`;
-    }
-
-    function pageAGetAgentOriginSection() {
-      const o = pageARouteOrigin;
-      const d = pageARouteDest;
-      if (!o || o.lat == null || o.lon == null) {
-        return (
-          "【出发地与距离】尚未设置出发地。可在左侧「出发地」使用「获取当前位置（GPS）」或「搜索城市」；也可点本面板「用 GPS 优化建议」与左侧共用同一数据。" +
-          "未设置时，无法估算你所在地到目的地的大致球面距离。"
-        );
-      }
-      const lines = [];
-      const label = o.label || "已设出发地";
-      const tag = o.kind === "geo" ? "GPS" : "城市";
-      lines.push(`已识别出发地：${label}（${tag}）`);
-      const ap = pageANearestAirport(o.lat, o.lon);
-      if (ap) {
-        lines.push(
-          `就近大型民航枢纽（示意）：${ap.name}（${ap.iata}），直线约 ${Math.round(ap.distKm)} km。`
-        );
-      }
-      if (d && d.lat != null && d.lon != null) {
-        const km = pageAHaversineKm(o.lat, o.lon, d.lat, d.lon);
-        const destLab = d.label || d.placeTitle || "目的地";
-        lines.push(
-          `与当前行程锚点「${destLab}」的球面距离约 ${Math.round(km)} km（未计航线绕飞与出入境，仅供粗算）。`
-        );
-      }
-      return "【出发地与距离】\n" + lines.join("\n");
-    }
-
-    const PAGE_A_AGENT_EXAMPLE_DISCLAIMER =
-      "【重要】下文航班号、火车时刻均为「结构示例」，用于说明典型动线，不是实时时刻表；实际班次、机型与票价请在航司、铁路官网或正规 OTA 查询后购票。";
-
-    function pageAAgentSpotTravelArchetype(spot, locLabel) {
-      const s = `${spot.name} ${spot.desc || ""} ${locLabel || ""}`;
-      if (/伊瓜苏|Iguaz|iguaz/i.test(s)) return "iguazu";
-      if (/基督|里约|瓜纳巴拉|科帕卡巴纳/i.test(s)) return "rio";
-      if (/亚马逊|马瑙斯|Manaus|雨林/i.test(s)) return "amazon";
-      if (/伦索伊斯|马拉尼昂|Lenç|沙丘/i.test(s)) return "lenco";
-      return "generic";
-    }
-
-    function pageAAgentHomeHubPhrase() {
-      const o = pageARouteOrigin;
-      if (o && o.lat != null && o.lon != null) {
-        const ap = pageANearestAirport(o.lat, o.lon);
-        if (ap) return `${ap.name}（${ap.iata}）`;
-      }
-      return "国内主要出境枢纽（如上海浦东 PVG / 北京首都 PEK / 广州 CAN，按你出发城市选择）";
-    }
-
-    function pageAAgentOptimalLegsSingle(iso3, archetype, spot, locLabel, countryName) {
-      const hub = pageAAgentHomeHubPhrase();
-      const legs = [];
-
-      if (iso3 === "BRA") {
-        if (archetype === "iguazu") {
-          legs.push(
-            `第1段 · 国际长航段（示例结构）\n` +
-              `从 ${hub} 出发 → 常见经迪拜 DXB、多哈 DOH 或欧洲枢纽（CDG/FRA 等）中转 → 入境巴西后落地圣保罗 GRU 或里约 GIG。\n` +
-              `示例联程写法（虚构编号，仅作占位）：EK／QR 等承运的「中国—中东—南美」组合，洲际段多在夜间起飞；第二段中转建议预留 ≥3 小时以便入境与重新托运（若分段购票则更久）。`
-          );
-          legs.push(
-            `第2段 · 巴西国内线（飞机为主）\n` +
-              `GRU → 伊瓜苏 IGU：航程约 1h35–2h，GOL（G3）、LATAM（JJ）等每日多班。\n` +
-              `示例时刻（完全虚构）：早线约 07:50 起飞 → 09:35 落地；午线约 13:10 → 14:55。请以订票当日航司时刻为准。`
-          );
-          legs.push(
-            `第3段 · 落地后地面交通\n` +
-              `IGU 机场 → 福斯·杜伊瓜苏镇或巴西侧瀑布园区：车程通常 15–25 分钟（出租车／网约车／酒店接机）。\n` +
-              `若计划去阿根廷侧（魔鬼咽喉等），需单独安排过境日与阿根廷签证／互惠费政策。`
-          );
-          return legs;
-        }
-        if (archetype === "rio") {
-          legs.push(
-            `第1段 · 国际段（示例结构）\n` +
-              `从 ${hub} → 中转 → 里约 GIG（优先）或圣保罗 GRU。若只能到 GRU，可再加一段国内线或夜间巴士前往里约（约 5–6 小时公路 / ~1 小时航班）。`
-          );
-          legs.push(
-            `第2段 · 里约市内 ↔ 基督山（科尔科瓦多）\n` +
-              `从南区／中心区酒店 → 科尔科瓦多小火车：通常需先到 Cosme Velho 站乘齿轨火车上山；旺季务必提前预约时段。\n` +
-              `示例到达窗口（虚构）：上午 09:30–10:00 抵达火车站换票，午间前后山顶游览（视云量调整）。`
-          );
-          return legs;
-        }
-        if (archetype === "amazon") {
-          legs.push(
-            `第1段 · 国际／国内衔接\n` +
-              `从 ${hub} 飞南美门户（GRU／GIG）后，再转国内线前往马瑙斯 MAO（亚马逊门户）。\n` +
-              `示例（虚构）：GRU → MAO 约 3h50–4h20，常见午班 12:40 前后起飞、傍晚前抵达（以航司为准）。`
-          );
-          legs.push(
-            `第2段 · 雨林行程\n` +
-              `马瑙斯市区 → 雨林 lodge：多依赖包船／旅游公司接驳，通常安排半天转场；雨季注意河流水位对船班影响。`
-          );
-          return legs;
-        }
-        if (archetype === "lenco") {
-          legs.push(
-            `第1段 · 飞往东北部\n` +
-              `从 ${hub} → 巴西国内中转 → 圣路易斯 SLZ 或附近机场，再租车／包车前往伦索伊斯地区（车程较长）。\n` +
-              `示例（虚构）：国内线衔接日建议单独留 1 天，避免晚班误点拖累次日徒步。`
-          );
-          legs.push(
-            `第2段 · 国家公园内\n` +
-              `园内为沙湖徒步线路，通常需本地向导＋越野车；雨季湖区蓄水景观最佳，旱季部分湖面可能干涸。`
-          );
-          return legs;
-        }
-        legs.push(
-          `第1段 · 国际段（示例）\n` +
-            `从 ${hub} → 中转 → 巴西主要门户 GRU／GIG／BSB 等，再按目的地换国内航班或长途巴士。`
-        );
-        legs.push(
-          `第2段 · 国内段\n` +
-            `巴西国内航线密集，典型提前 1–2 周订票；长途夜巴可省钱但耗时，适合预算型。`
-        );
-        return legs;
-      }
-
-      if (iso3 === "USA" || iso3 === "CAN" || iso3 === "AUS" || iso3 === "CHN") {
-        legs.push(
-          `第1段 · 远程航段（示例结构）\n` +
-            `从 ${hub} 出发，优先查直飞或一次中转至 ${countryName} 主要门户机场；旺季周末早班机常更准点。`
-        );
-        legs.push(
-          `第2段 · 国内／区域内衔接\n` +
-            `落地后视距离选择：① 1–3 小时内的下一程飞机；② 城际铁路／Amtrak／高铁；③ 租车自驾（注意驾照与保险）。\n` +
-            `示例（虚构）：若下一段为火车，常见班次为上午 09:15、中午 12:40、傍晚 17:05 等整点前后发车——务必在车站 APP 核实。`
-        );
-        return legs;
-      }
-
-      legs.push(
-        `第1段 · 国际段（示例）\n` +
-          `从 ${hub} 飞抵 ${countryName} 主要国际机场（以首都或最大城市为准），中转时间建议 ≥2.5h（跨航站楼可能更久）。`
-      );
-      legs.push(
-        `第2段 · 国内或区域交通\n` +
-          `根据景点位置，优先「飞次级机场 + 租车／包车」或「高铁 + 当地巴士」。\n` +
-          `示例（虚构）：若乘火车，可关注当日 08:20／14:50 这类整点班次；若乘国内线，常见为中午前后 11:40–13:10 的起飞窗口。`
-      );
-      legs.push(
-        `第3段 · 最后一公里\n` +
-          `景区接驳：多数世界遗产地有定时 shuttle 或出租车候车区；旺季建议预约返程时间。`
-      );
-      return legs;
-    }
-
-    function pageAAgentMultiCityBridge(iso3, fromSpot, toSpot, fromLoc, toLoc) {
-      const a = pageAAgentSpotTravelArchetype(fromSpot, fromLoc);
-      const b = pageAAgentSpotTravelArchetype(toSpot, toLoc);
-      if (iso3 === "BRA") {
-        if (a === "rio" && b === "iguazu") {
-          return (
-            `衔接 · 里约 → 伊瓜苏（推荐飞）\n` +
-              `GIG 或 SDU（若可用）→ IGU：直飞约 2h30–3h，LATAM／GOL 等有班。\n` +
-              `示例（虚构）：日航 10:20 起飞 → 12:55 落地 IGU；或傍晚线 18:05 → 20:40。落地后同上打车进镇。`
-          );
-        }
-        if (a === "iguazu" && b === "rio") {
-          return (
-            `衔接 · 伊瓜苏 → 里约\n` +
-              `IGU → GIG：同上反向；建议把「瀑布日」与「转场日」分开，勿安排红眼后立刻登山。`
-          );
-        }
-      }
-      return (
-        `衔接 · 「${fromSpot.name}」→「${toSpot.name}」\n` +
-          `远距离建议飞机或高铁（视该国基建）；中转日单独预留，示例转场窗口（虚构）：上午完成退房 → 午后 14:30 左右航班／火车 → 傍晚抵达下一城市。`
-      );
-    }
-
-    function pageAAgentSpotHeuristics(spot, locLabel) {
-      const blob = `${spot.name} ${spot.desc || ""} ${locLabel || ""}`;
-      let minDays = 1;
-      let maxDays = 2;
-      const cautions = [];
-      const localTips = [];
-
-      if (/瀑布|国家公园|雨林|峡谷|沙漠|冰川|极光|群岛|大堡礁/.test(blob)) {
-        minDays = 2;
-        maxDays = 4;
-      }
-      if (/博物馆|美术馆|教堂|广场|老城区|古城/.test(blob) && !/国家公园|雨林/.test(blob)) {
-        minDays = 1;
-        maxDays = 2;
-      }
-      if (/徒步|登山|环线|高原|雪山|海拔/.test(blob)) {
-        minDays = Math.max(minDays, 2);
-        maxDays = Math.max(maxDays, 5);
-        cautions.push("高海拔或长距离徒步需预留适应日与备用方案，关注天气窗口。");
-      }
-      if (/边境|阿根廷|乌拉圭|巴拉圭|两国/.test(blob)) {
-        cautions.push("跨境游览时核对护照签证、口岸开放日与两侧门票政策。");
-      }
-      if (/雨林|亚马逊|热带丛林/.test(blob)) {
-        cautions.push("雨林区域注意防蚊、饮用水卫生与向导；雨季可能影响道路与航班。");
-        localTips.push("当地正规参团或包车往往比完全自助更省心、更安全。");
-      }
-      if (/海滩|海岛|潜水|浮潜/.test(blob)) {
-        cautions.push("海上活动关注天气与海况；做好防晒、补水与离岸流风险提示。");
-      }
-
-      cautions.push("财物与证件分开放置，重要文件拍照备份。");
-      cautions.push("购票请走航司官网、车站或正规 OTA，警惕异常低价与钓鱼链接。");
-
-      return { minDays, maxDays, cautions, localTips };
-    }
-
-    function pageAAgentAppendMessage(role, text) {
-      const thread = document.getElementById("page-a-agent-thread");
-      if (!thread) return;
-      const div = document.createElement("div");
-      div.className = `page-a-agent__msg page-a-agent__msg--${role}`;
-      div.textContent = text;
-      thread.appendChild(div);
-      thread.scrollTop = thread.scrollHeight;
-    }
-
-    function pageAAgentResetThread() {
-      const thread = document.getElementById("page-a-agent-thread");
-      if (!thread) return;
-      thread.innerHTML = "";
-      pageAAgentAppendMessage(
-        "assistant",
-        "你好，我是路线助手。你可以直接提问（例如「请问怎么去伊瓜苏瀑布」），或在左侧「景点」勾选多个地点后点「生成规划路线」。\n\n" +
-          "我会直接给出较合适的出行方式组合（示例航班／火车时刻仅作动线说明，非实时表），并结合「计划出发日期」与（若已设置）出发地 GPS／城市做距离参考。\n\n" +
-          "若已在左侧点过「获取当前位置」，我会自动使用；也可点下面「用 GPS 优化」与左侧同步。"
-      );
-    }
-
-    function pageAMatchSpotFromQuestion(q, spots) {
-      const t = q.replace(/\s/g, "");
-      if (!spots || !spots.length) return null;
-      let best = null;
-      let bestScore = 0;
-      for (let i = 0; i < spots.length; i++) {
-        const s = spots[i];
-        const name = s.name || "";
-        const shortName = name.split("（")[0].trim();
-        const candidates = [name, shortName].filter(Boolean);
-        for (const c of candidates) {
-          if (c.length >= 2 && t.includes(c)) {
-            return { spot: s, index: i, matchLen: c.length };
-          }
-        }
-        const probe = shortName || name;
-        if (probe.length >= 3) {
-          for (let len = Math.min(probe.length, 8); len >= 3; len--) {
-            const sub = probe.slice(0, len);
-            if (t.includes(sub)) {
-              const score = len;
-              if (score > bestScore) {
-                bestScore = score;
-                best = { spot: s, index: i };
-              }
-              break;
-            }
-          }
-        }
-      }
-      return best;
-    }
-
-    function pageAAgentComposeSpotDirections(spot, locLabel, countryName) {
-      const iso = pageACurrentIso3;
-      const loc = locLabel || "该国境内";
-      const h = pageAAgentSpotHeuristics(spot, locLabel);
-      const arche = pageAAgentSpotTravelArchetype(spot, locLabel);
-      const legs = pageAAgentOptimalLegsSingle(iso, arche, spot, locLabel, countryName);
-      const sched = pageAGetTripScheduleHint();
-
-      const parts = [];
-      parts.push(`「${spot.name}」｜${countryName}`);
-      parts.push(PAGE_A_AGENT_EXAMPLE_DISCLAIMER);
-      parts.push(
-        `【建议行程节奏】该景点及周边建议预留约 ${h.minDays}–${h.maxDays} 天（含抵达、离开与缓冲）。`
-      );
-      parts.push(`【大致位置】${loc}`);
-      parts.push("【推荐动线 · 分段说明】\n\n" + legs.join("\n\n"));
-      parts.push(`【景点摘要】${spot.desc}`);
-      if (sched) parts.push(`【计划出发（行程面板）】${sched}`);
-      parts.push(pageAGetAgentOriginSection());
-      if (h.localTips.length) {
-        parts.push(`【当地玩法提示】\n${h.localTips.map((x) => "• " + x).join("\n")}`);
-      }
-      parts.push(`【注意事项】\n${h.cautions.map((c) => "• " + c).join("\n")}`);
-      parts.push("签证、检疫与票价以官方与航司为准。");
-      return parts.filter(Boolean).join("\n\n");
-    }
-
-    function pageAAgentComposeRoutePlan(selectedSpots, locs, countryName) {
-      const iso = pageACurrentIso3;
-      const sched = pageAGetTripScheduleHint();
-
-      let minSum = 0;
-      let maxSum = 0;
-      const cautionSet = new Set();
-      selectedSpots.forEach((s, i) => {
-        const h = pageAAgentSpotHeuristics(s, locs[i] || "");
-        minSum += h.minDays;
-        maxSum += h.maxDays;
-        h.cautions.forEach((c) => cautionSet.add(c));
-      });
-      const hops = Math.max(0, selectedSpots.length - 1);
-      const travelBuf = hops * 1;
-      minSum += travelBuf;
-      maxSum += travelBuf + hops;
-
-      const parts = [];
-      parts.push(`【${countryName}·多景点串联】`);
-      parts.push(PAGE_A_AGENT_EXAMPLE_DISCLAIMER);
-      parts.push(
-        `【建议总行程天数】约 ${minSum}–${maxSum} 天（含转场；跨国或远程接驳多时可再放宽）。`
-      );
-      parts.push("【各站停留（按勾选顺序）】");
-      selectedSpots.forEach((s, idx) => {
-        const loc = locs[idx] || "（见说明）";
-        const h = pageAAgentSpotHeuristics(s, loc);
-        parts.push(
-          `${idx + 1}. ${s.name}\n   区域：${loc}\n   建议停留：约 ${h.minDays}–${h.maxDays} 天`
-        );
-      });
-
-      if (selectedSpots.length >= 1) {
-        const first = selectedSpots[0];
-        const a0 = pageAAgentSpotTravelArchetype(first, locs[0] || "");
-        const leg0 = pageAAgentOptimalLegsSingle(iso, a0, first, locs[0] || "", countryName);
-        parts.push("【入境后 · 前往第一站 · 推荐分段】\n\n" + leg0.join("\n\n"));
-      }
-      for (let i = 0; i < selectedSpots.length - 1; i++) {
-        parts.push(
-          pageAAgentMultiCityBridge(
-            iso,
-            selectedSpots[i],
-            selectedSpots[i + 1],
-            locs[i] || "",
-            locs[i + 1] || ""
-          )
-        );
-      }
-
-      if (sched) parts.push(`【计划出发（行程面板）】${sched}`);
-      parts.push(pageAGetAgentOriginSection());
-      parts.push(
-        "【注意事项（汇总）】\n" +
-          Array.from(cautionSet)
-            .map((c) => "• " + c)
-            .join("\n")
-      );
-      parts.push("以上为自动草案；航班／列车编号与时刻请在购票前核实。");
-      return parts.filter(Boolean).join("\n\n");
-    }
-
-    function pageAAgentReplyToQuestion(userText) {
-      const iso = pageACurrentIso3;
-      const countryName = pageAGetCountryTitleForAgent();
-      const spots = PAGE_A_COUNTRY_SPOTS[iso] || [];
-      const locations = PAGE_A_SPOT_LOCATIONS[iso] || [];
-      const q = userText.trim();
-      if (!q) {
-        pageAAgentAppendMessage("assistant", "请输入你想了解的问题。");
-        return;
-      }
-      const matched = pageAMatchSpotFromQuestion(q, spots);
-      if (matched && matched.spot) {
-        const loc = locations[matched.index] || "";
-        pageAAgentAppendMessage(
-          "assistant",
-          pageAAgentComposeSpotDirections(matched.spot, loc, countryName)
-        );
-        return;
-      }
-      if (/怎么|如何|怎样去|路线|交通|去哪|到.*哪/.test(q)) {
-        pageAAgentAppendMessage(
-          "assistant",
-          `我暂时没能从问题里对上具体景点名。请在「景点」页查看列表中的准确名称，或直接在问题里写出与列表一致的景点名（例如「伊瓜苏瀑布」）。\n\n当前目的地：${countryName}。你也可以勾选多个景点后点「生成规划路线」。`
-        );
-        return;
-      }
-      pageAAgentAppendMessage(
-        "assistant",
-        `（${countryName}）我已收到：「${q}」。你可以问「怎么去某某景点」，或使用左侧景点复选框与「生成规划路线」获取串联行程。`
-      );
-    }
-
-    function pageAUpdateSpotPlanButton() {
-      const spotsEl = document.getElementById("page-a-spots-content");
-      const btn = document.getElementById("page-a-spots-plan-btn");
-      if (!spotsEl || !btn) return;
-      const n = spotsEl.querySelectorAll("input[data-page-a-spot]:checked").length;
-      btn.disabled = n === 0;
-    }
-
-    function pageAAgentPlanFromSelectedSpots() {
-      const spotsEl = document.getElementById("page-a-spots-content");
-      if (!spotsEl) return;
-      const boxes = spotsEl.querySelectorAll("input[data-page-a-spot]:checked");
-      if (!boxes.length) return;
-      const iso = pageACurrentIso3;
-      const spots = PAGE_A_COUNTRY_SPOTS[iso] || [];
-      const locations = PAGE_A_SPOT_LOCATIONS[iso] || [];
-      const names = [];
-      const locs = [];
-      const selectedSpots = [];
-      boxes.forEach((inp) => {
-        const i = parseInt(inp.getAttribute("data-page-a-spot"), 10);
-        if (!Number.isFinite(i) || !spots[i]) return;
-        names.push(spots[i].name);
-        locs.push(locations[i] || "");
-        selectedSpots.push({ name: spots[i].name, desc: spots[i].desc || "" });
-      });
-      if (!names.length) return;
-      const countryName = pageAGetCountryTitleForAgent();
-      const summary = pageAAgentComposeRoutePlan(selectedSpots, locs, countryName);
-      pageAAgentAppendMessage("user", `请为已选景点规划路线：${names.join("、")}`);
-      pageAAgentAppendMessage("assistant", summary);
-    }
-
-    (function initPageAAgent() {
-      const send = document.getElementById("page-a-agent-send");
-      const input = document.getElementById("page-a-agent-input");
-      const agentGeo = document.getElementById("page-a-agent-geo-btn");
-      const spotsPanel = document.getElementById("page-a-panel-spots");
-      if (agentGeo) {
-        agentGeo.addEventListener("click", () => {
-          if (!navigator.geolocation) {
-            pageAAgentAppendMessage(
-              "assistant",
-              "当前浏览器不支持定位。请在左侧「出发地」改用「搜索城市」设置起点。"
-            );
-            return;
-          }
-          agentGeo.disabled = true;
-          navigator.geolocation.getCurrentPosition(
-            (pos) => {
-              agentGeo.disabled = false;
-              pageARouteSetOriginFromGeo(
-                pos.coords.latitude,
-                pos.coords.longitude,
-                "当前位置",
-                "geo"
-              );
-              pageAAgentAppendMessage(
-                "assistant",
-                "已获取 GPS，并与左侧「出发地」同步。之后你提问或生成路线时，会自动带上大致距离与枢纽参考（无需重复授权）。"
-              );
-            },
-            () => {
-              agentGeo.disabled = false;
-              pageAAgentAppendMessage(
-                "assistant",
-                "无法获取定位：请检查浏览器位置权限，或在左侧使用「搜索城市」设置出发地。"
-              );
-            },
-            { enableHighAccuracy: false, timeout: 12000, maximumAge: 600000 }
-          );
-        });
-      }
-      if (send && input) {
-        send.addEventListener("click", () => {
-          const t = input.value.trim();
-          if (!t) return;
-          pageAAgentAppendMessage("user", t);
-          input.value = "";
-          pageAAgentReplyToQuestion(t);
-        });
-        input.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            send.click();
-          }
-        });
-      }
-      if (spotsPanel) {
-        spotsPanel.addEventListener("change", (e) => {
-          const t = e.target;
-          if (t && t.matches && t.matches("input[data-page-a-spot]")) {
-            pageAUpdateSpotPlanButton();
-          }
-        });
-        spotsPanel.addEventListener("click", (e) => {
-          const btn = e.target && e.target.closest && e.target.closest("#page-a-spots-plan-btn");
-          if (btn) {
-            e.preventDefault();
-            pageAAgentPlanFromSelectedSpots();
-          }
-        });
-      }
-    })();
 
     (function initPageATabBar() {
       const tabBar = document.getElementById("page-a-tab-bar");

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#000"/>
+    </radialGradient>
+    <linearGradient id="star" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff"/>
+      <stop offset="55%" stop-color="#d0d0d0"/>
+      <stop offset="100%" stop-color="#999"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <clipPath id="clip">
+      <circle cx="32" cy="32" r="30"/>
+    </clipPath>
+  </defs>
+  <circle cx="32" cy="32" r="30" fill="url(#bg)" stroke="#444" stroke-width="1.5"/>
+  <g clip-path="url(#clip)">
+    <!-- outer ring accent -->
+    <circle cx="32" cy="32" r="28" fill="none" stroke="#333" stroke-width="0.5" stroke-dasharray="3 5"/>
+    <!-- main 4-pointed star -->
+    <polygon
+      points="32,5 36.8,25.5 58,32 36.8,38.5 32,59 27.2,38.5 6,32 27.2,25.5"
+      fill="url(#star)"
+      opacity="0.92"
+      filter="url(#glow)"
+    />
+    <!-- inner diamond highlight -->
+    <polygon
+      points="32,18 37,32 32,46 27,32"
+      fill="#fff"
+      opacity="0.35"
+    />
+    <!-- center dot -->
+    <circle cx="32" cy="32" r="2.2" fill="#fff" opacity="0.9"/>
+    <!-- small accent dots at tips -->
+    <circle cx="32" cy="6.5" r="1" fill="#fff" opacity="0.5"/>
+    <circle cx="32" cy="57.5" r="1" fill="#fff" opacity="0.5"/>
+    <circle cx="7.5" cy="32" r="1" fill="#fff" opacity="0.5"/>
+    <circle cx="56.5" cy="32" r="1" fill="#fff" opacity="0.5"/>
+  </g>
+</svg>
