@@ -218,6 +218,48 @@
       transition: color 0.2s ease;
     }
 
+    .hero-ui__actions {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      pointer-events: auto;
+    }
+
+    .hero-ui__video-btn {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border-radius: 999px;
+      padding: 0.72rem 1.15rem;
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease,
+        box-shadow 0.18s ease;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+    }
+
+    .hero-ui__video-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: rgba(95, 232, 255, 0.5);
+      background: rgba(95, 232, 255, 0.14);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34);
+    }
+
+    .hero-ui__video-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.52;
+      box-shadow: none;
+    }
+
     .full-search-dock {
       position: fixed;
       z-index: 15;
@@ -2580,6 +2622,16 @@
       />
     </div>
     <p class="hero-ui__hint" id="hero-search-hint" aria-live="polite"></p>
+    <div class="hero-ui__actions">
+      <button
+        type="button"
+        class="hero-ui__video-btn"
+        id="demo-video-trigger"
+        aria-label="在 YouTube 中观看演示视频"
+      >
+        Watch Demo on YouTube
+      </button>
+    </div>
   </div>
 
   <div id="full-search-dock" class="full-search-dock" aria-hidden="true">
@@ -2904,6 +2956,8 @@
   <script type="module">
     import * as THREE from "three";
 
+    const DEMO_VIDEO_URL = "https://youtu.be/tYysIvBMSns";
+
     const GEOJSON_URL =
       "https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@master/geojson/ne_110m_admin_0_countries.geojson";
 
@@ -2912,12 +2966,26 @@
     const heroUi = document.getElementById("hero-ui");
     const heroSearchInput = document.getElementById("hero-destination-search");
     const heroSearchHint = document.getElementById("hero-search-hint");
+    const demoVideoTrigger = document.getElementById("demo-video-trigger");
     const fullSearchDock = document.getElementById("full-search-dock");
     const fullSearchInput = document.getElementById("full-destination-search");
     const fullSearchHint = document.getElementById("full-search-hint");
 
     let viewMode = "hero";
     let layoutAnim = null;
+
+    const hasDemoVideo = Boolean(DEMO_VIDEO_URL.trim());
+
+    if (demoVideoTrigger) {
+      demoVideoTrigger.disabled = !hasDemoVideo;
+      demoVideoTrigger.title = hasDemoVideo
+        ? "在 YouTube 中观看产品演示视频"
+        : "请先在脚本中配置 DEMO_VIDEO_URL";
+    }
+    demoVideoTrigger?.addEventListener("click", () => {
+      if (!hasDemoVideo) return;
+      window.open(DEMO_VIDEO_URL, "_blank", "noopener,noreferrer");
+    });
 
     /** 全景模式：拖拽旋转 + 滚轮缩放（带惯性） */
     let fullCamZBaseline = 0;
