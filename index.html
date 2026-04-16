@@ -260,6 +260,106 @@
       box-shadow: none;
     }
 
+    .demo-video-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 220;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(0.9rem, 3vw, 2rem);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.28s ease, visibility 0.28s ease;
+    }
+
+    .demo-video-modal.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .demo-video-modal__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.74);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .demo-video-modal__panel {
+      position: relative;
+      z-index: 1;
+      width: min(92vw, 1120px);
+      border-radius: 20px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(20, 24, 34, 0.96), rgba(4, 6, 10, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.5);
+    }
+
+    .demo-video-modal__bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.1rem 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-family: Inter, system-ui, sans-serif;
+    }
+
+    .demo-video-modal__title {
+      margin: 0;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .demo-video-modal__close {
+      appearance: none;
+      border: none;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.86);
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .demo-video-modal__body {
+      padding: 1rem;
+    }
+
+    .demo-video-modal__frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .demo-video-modal__player {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #000;
+      border: 0;
+    }
+
+    .demo-video-modal__note {
+      margin: 0.8rem 0 0;
+      color: rgba(255, 255, 255, 0.56);
+      font-family: Inter, system-ui, sans-serif;
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
     .full-search-dock {
       position: fixed;
       z-index: 15;
@@ -2627,9 +2727,11 @@
         type="button"
         class="hero-ui__video-btn"
         id="demo-video-trigger"
-        aria-label="在 YouTube 中观看演示视频"
+        aria-haspopup="dialog"
+        aria-controls="demo-video-modal"
+        aria-label="观看演示视频"
       >
-        Watch Demo on YouTube
+        Watch Demo
       </button>
     </div>
   </div>
@@ -2659,6 +2761,39 @@
   </div>
 
   <div id="canvas-wrap"></div>
+
+  <div id="demo-video-modal" class="demo-video-modal" aria-hidden="true">
+    <div class="demo-video-modal__backdrop" data-demo-video-close="true" aria-hidden="true"></div>
+    <div
+      class="demo-video-modal__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="demo-video-title"
+    >
+      <div class="demo-video-modal__bar">
+        <h2 class="demo-video-modal__title" id="demo-video-title">Product Demo</h2>
+        <button type="button" class="demo-video-modal__close" id="demo-video-close" aria-label="关闭视频">
+          ×
+        </button>
+      </div>
+      <div class="demo-video-modal__body">
+        <div class="demo-video-modal__frame">
+          <iframe
+            id="demo-video-player"
+            class="demo-video-modal__player"
+            src=""
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <p class="demo-video-modal__note">
+          使用你从 YouTube 后台复制的官方嵌入地址，部署到 GitHub Pages 后即可站内播放。
+        </p>
+      </div>
+    </div>
+  </div>
 
   <div id="page-a-overlay" class="page-a-overlay" aria-hidden="true">
     <div class="page-a-overlay__backdrop" aria-hidden="true"></div>
@@ -2956,7 +3091,7 @@
   <script type="module">
     import * as THREE from "three";
 
-    const DEMO_VIDEO_URL = "https://youtu.be/tYysIvBMSns";
+    const DEMO_VIDEO_URL = "https://www.youtube.com/embed/tYysIvBMSns?si=XDRMtavszER9qxHc";
 
     const GEOJSON_URL =
       "https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@master/geojson/ne_110m_admin_0_countries.geojson";
@@ -2967,6 +3102,9 @@
     const heroSearchInput = document.getElementById("hero-destination-search");
     const heroSearchHint = document.getElementById("hero-search-hint");
     const demoVideoTrigger = document.getElementById("demo-video-trigger");
+    const demoVideoModal = document.getElementById("demo-video-modal");
+    const demoVideoPlayer = document.getElementById("demo-video-player");
+    const demoVideoClose = document.getElementById("demo-video-close");
     const fullSearchDock = document.getElementById("full-search-dock");
     const fullSearchInput = document.getElementById("full-destination-search");
     const fullSearchHint = document.getElementById("full-search-hint");
@@ -2979,12 +3117,37 @@
     if (demoVideoTrigger) {
       demoVideoTrigger.disabled = !hasDemoVideo;
       demoVideoTrigger.title = hasDemoVideo
-        ? "在 YouTube 中观看产品演示视频"
+        ? "观看产品演示视频"
         : "请先在脚本中配置 DEMO_VIDEO_URL";
     }
-    demoVideoTrigger?.addEventListener("click", () => {
-      if (!hasDemoVideo) return;
-      window.open(DEMO_VIDEO_URL, "_blank", "noopener,noreferrer");
+
+    function openDemoVideoModal() {
+      if (!hasDemoVideo || !demoVideoModal || !demoVideoPlayer) return;
+      if (!demoVideoPlayer.getAttribute("src")) {
+        demoVideoPlayer.src = DEMO_VIDEO_URL;
+      }
+      demoVideoModal.classList.add("is-open");
+      demoVideoModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeDemoVideoModal() {
+      if (!demoVideoModal || !demoVideoPlayer) return;
+      demoVideoPlayer.src = "";
+      demoVideoModal.classList.remove("is-open");
+      demoVideoModal.setAttribute("aria-hidden", "true");
+    }
+
+    demoVideoTrigger?.addEventListener("click", openDemoVideoModal);
+    demoVideoClose?.addEventListener("click", closeDemoVideoModal);
+    demoVideoModal?.addEventListener("click", (event) => {
+      if (event.target instanceof HTMLElement && event.target.dataset.demoVideoClose === "true") {
+        closeDemoVideoModal();
+      }
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && demoVideoModal?.classList.contains("is-open")) {
+        closeDemoVideoModal();
+      }
     });
 
     /** 全景模式：拖拽旋转 + 滚轮缩放（带惯性） */
