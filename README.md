@@ -1,6 +1,7 @@
 # Arc-Exploration
 
 > 为旅行者与出差人士打造的一站式旅行规划信息集成平台。
+> 欢迎收看demo视频：https://youtu.be/tYysIvBMSns?si=CPo46GjsYiSqOxgE
 
 ---
 
