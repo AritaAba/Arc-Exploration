@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Arc-Exploration</title>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" sizes="any" />
+  <link rel="apple-touch-icon" href="logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@300;400&display=swap" rel="stylesheet" />
@@ -132,6 +133,10 @@
     .hero-ui.hero-ui--hidden {
       opacity: 0;
       transform: translate(-50%, -16px);
+      pointer-events: none;
+    }
+
+    .hero-ui.hero-ui--hidden .hero-ui__actions {
       pointer-events: none;
     }
 
@@ -1176,6 +1181,18 @@
       margin: 0;
       font-size: 0.58rem;
       color: rgba(255, 255, 255, 0.38);
+    }
+
+    .page-a-route__geo-status {
+      display: block;
+      min-height: 1.35em;
+      margin-top: 0.38rem;
+      color: rgba(255, 255, 255, 0.62);
+      line-height: 1.45;
+    }
+
+    .page-a-route__geo-status.is-error {
+      color: rgba(255, 190, 170, 0.92);
     }
 
     .page-a-route__itinerary {
@@ -2776,7 +2793,7 @@
             src=""
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
+            referrerpolicy="origin"
             allowfullscreen
           ></iframe>
         </div>
@@ -2840,6 +2857,12 @@
                     <button type="button" class="page-a-route__btn" id="page-a-route-geo-btn">
                       获取当前位置（GPS）
                     </button>
+                    <span
+                      class="page-a-route__geo-status"
+                      id="page-a-route-geo-status"
+                      role="status"
+                      aria-live="polite"
+                    ></span>
                   </p>
                   <div class="page-a-route__origin-panel" id="page-a-route-origin-city-panel" hidden>
                     <div class="page-a-route__row">
@@ -3080,7 +3103,16 @@
   <script type="module">
     import * as THREE from "three";
 
-    const DEMO_VIDEO_URL = "https://www.youtube.com/embed/tYysIvBMSns?si=XDRMtavszER9qxHc";
+    const DEMO_VIDEO_ID = "tYysIvBMSns";
+    const DEMO_VIDEO_PAGE_URL = `https://www.youtube.com/watch?v=${DEMO_VIDEO_ID}`;
+
+    function getDemoVideoEmbedUrl() {
+      const params = new URLSearchParams({ rel: "0", modestbranding: "1" });
+      if (window.location.origin && window.location.origin !== "null") {
+        params.set("origin", window.location.origin);
+      }
+      return `https://www.youtube-nocookie.com/embed/${DEMO_VIDEO_ID}?${params.toString()}`;
+    }
 
     const GEOJSON_URL =
       "https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@master/geojson/ne_110m_admin_0_countries.geojson";
@@ -3101,7 +3133,7 @@
     let viewMode = "hero";
     let layoutAnim = null;
 
-    const hasDemoVideo = Boolean(DEMO_VIDEO_URL.trim());
+    const hasDemoVideo = Boolean(DEMO_VIDEO_ID.trim());
 
     if (demoVideoTrigger) {
       demoVideoTrigger.disabled = !hasDemoVideo;
@@ -3110,10 +3142,18 @@
         : "请先在脚本中配置 DEMO_VIDEO_URL";
     }
 
-    function openDemoVideoModal() {
+    function openDemoVideoModal(event) {
+      if (viewMode !== "hero" || layoutAnim != null || !heroUi?.classList.contains("hero-ui--visible")) {
+        event?.preventDefault();
+        return;
+      }
       if (!hasDemoVideo || !demoVideoModal || !demoVideoPlayer) return;
+      if (window.location.protocol === "file:") {
+        window.open(DEMO_VIDEO_PAGE_URL, "_blank", "noopener,noreferrer");
+        return;
+      }
       if (!demoVideoPlayer.getAttribute("src")) {
-        demoVideoPlayer.src = DEMO_VIDEO_URL;
+        demoVideoPlayer.src = getDemoVideoEmbedUrl();
       }
       demoVideoModal.classList.add("is-open");
       demoVideoModal.setAttribute("aria-hidden", "false");
@@ -3618,46 +3658,97 @@
 
     async function fetchRestCountryForFeature(feat) {
       const p = feat.properties || {};
-      if (isTaiwanRegionFeature(feat)) {
-        try {
-          const res = await fetch("https://restcountries.com/v3.1/alpha/CHN");
-          if (res.ok) {
-            const data = await res.json();
-            const c = Array.isArray(data) ? data[0] : data;
-            if (c && c.name) {
-              return {
-                country: c,
-                geoProps: p,
-                extentOverride: null,
-              };
-            }
-          }
-        } catch (_) {
-          /* fall through */
-        }
-        return { country: null, geoProps: p, extentOverride: null };
-      }
+      const iso3 = String(iso3FromProps(p) || "").toUpperCase();
+      const iso2 = isTaiwanRegionFeature(feat)
+        ? "CN"
+        : propsIso2(p) ||
+          Object.keys(_ISO2_TO_ISO3).find((code) => _ISO2_TO_ISO3[code] === iso3);
+      if (!iso2) return { country: null, geoProps: p, extentOverride: null };
 
-      const code = iso3FromProps(p);
-      const tryUrls = [];
-      if (code) tryUrls.push(`https://restcountries.com/v3.1/alpha/${code}`);
-      const admin = p.ADMIN || p.NAME || "";
-      if (admin) {
-        tryUrls.push(
-          `https://restcountries.com/v3.1/name/${encodeURIComponent(admin)}?fullText=true`
-        );
-      }
-      for (let u = 0; u < tryUrls.length; u++) {
-        try {
-          const res = await fetch(tryUrls[u]);
-          if (!res.ok) continue;
-          const data = await res.json();
-          const c = Array.isArray(data) ? data[0] : data;
-          if (c && c.name)
-            return { country: c, geoProps: p, extentOverride: null };
-        } catch (_) {
-          /* next */
+      // REST Countries v3.1 was retired and now returns a deprecation payload
+      // instead of country data. This request serves only the globe click panel.
+      try {
+        const extent = featureLonLatExtent(feat);
+        const center = extent
+          ? {
+              lat: (extent.minLat + extent.maxLat) / 2,
+              lon: (extent.minLon + extent.maxLon) / 2,
+            }
+          : null;
+        const populationRequest = fetch(
+          `https://api.worldbank.org/v2/country/${encodeURIComponent(iso2)}/indicator/SP.POP.TOTL?format=json&per_page=5`
+        ).then((response) => (response.ok ? response.json() : null));
+        const timezoneRequest = center
+          ? fetch(
+              `https://timeapi.io/api/TimeZone/coordinate?latitude=${encodeURIComponent(center.lat)}&longitude=${encodeURIComponent(center.lon)}`
+            ).then((response) => (response.ok ? response.json() : null))
+          : Promise.resolve(null);
+        const res = await fetch("https://countries.trevorblades.com/", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            query:
+              "query Country($code: ID!) { country(code: $code) { name capital currency phone languages { code name } } }",
+            variables: { code: iso2 },
+          }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        const record = (await res.json())?.data?.country;
+        if (record?.name) {
+          const [populationResult, timezoneResult] = await Promise.allSettled([
+            populationRequest,
+            timezoneRequest,
+          ]);
+          const populationRows =
+            populationResult.status === "fulfilled" ? populationResult.value?.[1] : null;
+          const population = Array.isArray(populationRows)
+            ? populationRows.find((row) => Number.isFinite(row?.value))?.value
+            : null;
+          const timezone =
+            timezoneResult.status === "fulfilled"
+              ? timezoneResult.value?.timeZone || null
+              : null;
+          const leftDriving = new Set([
+            "AG", "AI", "AU", "BB", "BD", "BM", "BN", "BS", "BT", "BW", "CY",
+            "DM", "FK", "FJ", "GD", "GG", "GY", "HK", "ID", "IE", "IM", "IN",
+            "JE", "JM", "JP", "KE", "KI", "KN", "KY", "LC", "LK", "LS", "MO",
+            "MS", "MT", "MU", "MW", "MY", "MZ", "NA", "NF", "NP", "NR", "NZ",
+            "PG", "PK", "PN", "SB", "SC", "SG", "SH", "SL", "SR", "SZ", "TC",
+            "TH", "TK", "TO", "TT", "TV", "TZ", "UG", "VC", "VG", "VI", "WS",
+            "ZA", "ZM", "ZW", "GB"
+          ]).has(iso2);
+          const languages = Object.fromEntries(
+            (record.languages || [])
+              .filter((language) => language?.code && language?.name)
+              .map((language) => [language.code, language.name])
+          );
+          const currencies = Object.fromEntries(
+            String(record.currency || "")
+              .split(",")
+              .map((code) => code.trim())
+              .filter(Boolean)
+              .map((code) => [code, { name: code }])
+          );
+          return {
+            country: {
+              name: { common: record.name },
+              capital: record.capital ? [record.capital] : [],
+              flags: { png: `https://flags.restcountries.com/v5/w320/${iso2.toLowerCase()}.png` },
+              languages,
+              currencies,
+              idd: record.phone ? { root: `+${record.phone}` } : null,
+              population,
+              timezones: timezone ? [timezone] : [],
+              car: { side: leftDriving ? "left" : "right" },
+              cca2: iso2,
+              cca3: iso3,
+            },
+            geoProps: p,
+            extentOverride: null,
+          };
         }
+      } catch (error) {
+        console.warn("Country click panel request failed:", error);
       }
       return { country: null, geoProps: p, extentOverride: null };
     }
@@ -7591,6 +7682,7 @@
       const inp = document.getElementById("page-a-route-origin-input");
       const geoBtn = document.getElementById("page-a-route-geocode-btn");
       const locBtn = document.getElementById("page-a-route-geo-btn");
+      const locStatus = document.getElementById("page-a-route-geo-status");
       const modeEl = document.getElementById("page-a-route-mode");
       const btnModeGeo = document.getElementById("page-a-route-origin-mode-geo");
       const btnModeCity = document.getElementById("page-a-route-origin-mode-city");
@@ -7635,15 +7727,30 @@
 
       if (locBtn) {
         locBtn.addEventListener("click", () => {
+          const setGeoStatus = (message, isError = false) => {
+            if (!locStatus) return;
+            locStatus.textContent = message;
+            locStatus.classList.toggle("is-error", isError);
+          };
+          if (!window.isSecureContext) {
+            setGeoStatus("当前页面不是安全连接，浏览器已阻止 GPS。请改用 HTTPS 或 localhost。", true);
+            return;
+          }
           if (!navigator.geolocation) {
             const hintEl = document.getElementById("page-a-route-hint");
+            setGeoStatus("当前浏览器不支持 GPS 定位。", true);
             if (hintEl) hintEl.textContent = "当前浏览器不支持定位。";
             return;
           }
           locBtn.disabled = true;
+          const idleLabel = locBtn.textContent;
+          locBtn.textContent = "正在获取位置…";
+          setGeoStatus("请在浏览器提示中允许位置权限。正在定位…");
           navigator.geolocation.getCurrentPosition(
             (pos) => {
               locBtn.disabled = false;
+              locBtn.textContent = idleLabel;
+              setGeoStatus(`定位成功（精度约 ${Math.round(pos.coords.accuracy || 0)} 米）`);
               pageARouteSetOriginFromGeo(
                 pos.coords.latitude,
                 pos.coords.longitude,
@@ -7651,8 +7758,15 @@
                 "geo"
               );
             },
-            () => {
+            (error) => {
               locBtn.disabled = false;
+              locBtn.textContent = idleLabel;
+              const messages = {
+                1: "位置权限被拒绝。请在浏览器地址栏的网站权限中允许“位置”，然后重试。",
+                2: "暂时无法确定位置，请检查系统定位服务或网络后重试。",
+                3: "GPS 获取超时，请移到信号更好的位置后重试。",
+              };
+              setGeoStatus(messages[error?.code] || "无法获取位置，请检查浏览器和系统定位权限。", true);
               const hintEl = document.getElementById("page-a-route-hint");
               if (hintEl)
                 hintEl.textContent =
